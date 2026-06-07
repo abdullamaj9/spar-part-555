@@ -304,6 +304,8 @@ function startWaiting(){
       .then(function(r){ return r.json(); })
       .then(function(data){
         if(!data || !data.messages) return;
+        // DEBUG — اطبع أول رسالتين لنرى الشكل
+        console.log('📬 INBOX:', JSON.stringify(data.messages.slice(0,3)));
         var msgs = data.messages;
         var updated = false;
         var orders = getOrders();
