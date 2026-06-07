@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كارلي — طلب قطعة غيار</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+*{box-sizing:border-box}
+body{background:#f8fafc;margin:0;font-family:'IBM Plex Sans Arabic',sans-serif}
+
+/* NAV */
+.topnav{background:#fff;border-bottom:1px solid var(--border);padding:.875rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 1px 8px rgba(0,0,0,.06)}
+.logo{display:flex;align-items:center;gap:.6rem;font-size:1.25rem;font-weight:700;color:var(--brand)}
+.logo span{color:var(--text);font-weight:400;font-size:.82rem}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#6B0026,#8B0032);padding:2rem 1.5rem;text-align:center;color:#fff}
+.hero h1{font-size:1.75rem;font-weight:700;margin-bottom:.4rem}
+.hero h1 em{color:#ffb3c6;font-style:normal}
+.hero p{opacity:.85;font-size:.9rem}
+
+/* BRANDS TICKER */
+.brands-strip{background:#fff;border-bottom:1px solid var(--border);padding:.75rem 0;overflow:hidden;position:relative}
+.brands-strip::before,.brands-strip::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2}
+.brands-strip::before{right:0;background:linear-gradient(to left,#fff,transparent)}
+.brands-strip::after{left:0;background:linear-gradient(to right,#fff,transparent)}
+.brands-track{display:flex;gap:2rem;animation:ticker 25s linear infinite;width:max-content}
+.brands-track:hover{animation-play-state:paused}
+.brand-item{display:flex;flex-direction:column;align-items:center;gap:.375rem;flex-shrink:0;padding:0 .5rem}
+.brand-logo{width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:#fff}
+.brand-name{font-size:.68rem;font-weight:600;color:var(--muted);white-space:nowrap}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* PROGRESS */
+.agent-wrap{max-width:680px;margin:1rem auto;padding:0 1rem 2rem}
+.progress-steps{display:flex;align-items:center;margin-bottom:1.25rem;padding:.65rem 1rem;background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);position:sticky;top:57px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.ps{display:flex;align-items:center;gap:.35rem;flex:1;justify-content:center}
+.ps-num{width:24px;height:24px;border-radius:50%;border:2px solid var(--border2);font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0}
+.ps-lbl{font-size:.72rem;color:var(--muted);white-space:nowrap}
+.ps.act .ps-num{border-color:var(--brand);background:var(--brand);color:#fff}
+.ps.act .ps-lbl{color:var(--text);font-weight:600}
+.ps.done .ps-num{border-color:var(--success);background:var(--success-light);color:var(--success)}
+.ps.done .ps-lbl{color:var(--success)}
+.ps-line{flex:1;height:1px;background:var(--border);max-width:30px}
+
+/* CHAT */
+.chat-box{display:flex;flex-direction:column;gap:.875rem;margin-bottom:1.25rem}
+.bubble-row{display:flex;gap:.625rem;align-items:flex-end}
+.bubble-row.agent{flex-direction:row}
+.bubble-row.user{flex-direction:row-reverse}
+.bav{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.95rem}
+.bav.ag{background:var(--brand);color:#fff}
+.bav.us{background:var(--info-light);color:var(--info)}
+.bubble{max-width:78%;padding:.75rem 1rem;border-radius:14px;font-size:.875rem;line-height:1.6}
+.bubble.ag{background:#fff;border:1px solid var(--border);border-bottom-right-radius:4px}
+.bubble.us{background:var(--brand);color:#fff;border-bottom-left-radius:4px}
+.btime{font-size:.68rem;opacity:.5;margin-top:.25rem}
+
+/* PANELS */
+.input-panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;box-shadow:var(--shadow-md)}
+.panel-title{font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:.875rem;display:flex;align-items:center;gap:.4rem}
+.step-block{display:none}.step-block.show{display:block}
+
+/* TYPE */
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:.875rem}
+.type-opt{border:1.5px solid var(--border);border-radius:var(--radius);padding:.875rem .5rem;cursor:pointer;text-align:center;transition:all .15s;background:#fff}
+.type-opt:hover{border-color:var(--brand-mid);background:var(--brand-light)}
+.type-opt.on{border-color:var(--brand);background:var(--brand-light)}
+.type-opt i{font-size:1.4rem;display:block;margin-bottom:.35rem;color:var(--muted2)}
+.type-opt.on i{color:var(--brand)}
+.type-opt .tname{font-size:.82rem;font-weight:700;color:var(--text)}
+.type-opt .tdesc{font-size:.7rem;color:var(--muted);margin-top:.2rem;line-height:1.4}
+
+/* CAT */
+.cat-grid-s{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.875rem}
+.cat-opt{border:1px solid var(--border);border-radius:var(--radius-sm);padding:.65rem .4rem;cursor:pointer;text-align:center;transition:all .15s;background:#fff}
+.cat-opt:hover{border-color:var(--brand-mid);background:var(--brand-light)}
+.cat-opt.on{border-color:var(--brand);background:var(--brand-light)}
+.cat-opt i{font-size:1.1rem;display:block;margin-bottom:.25rem;color:var(--muted)}
+.cat-opt.on i{color:var(--brand)}
+.cat-opt span{font-size:.72rem;font-weight:600;color:var(--text)}
+
+/* PARTS */
+.parts-grid-img{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.875rem}
+.part-img-opt{border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;text-align:center;transition:all .15s;background:#fff;overflow:hidden}
+.part-img-opt:hover{border-color:var(--brand-mid);background:var(--brand-light)}
+.part-img-opt.on{border-color:var(--brand);background:var(--brand-light)}
+.part-img-thumb{width:100%;height:60px;display:flex;align-items:center;justify-content:center;background:var(--bg);font-size:1.75rem}
+.part-img-opt.on .part-img-thumb{background:var(--brand-light)}
+.part-img-name{font-size:.68rem;font-weight:600;padding:.35rem .25rem;color:var(--text);line-height:1.3}
+
+/* FORM */
+.form-group{margin-bottom:.75rem}
+.form-group label{display:block;font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:.3rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.img-upload-box{border:2px dashed var(--border2);border-radius:var(--radius);padding:1rem;text-align:center;cursor:pointer;transition:all .15s;background:var(--bg)}
+.img-upload-box:hover{border-color:var(--brand);background:var(--brand-light)}
+.img-upload-box.has-img{border-style:solid;border-color:var(--success);background:var(--success-light)}
+.img-preview{max-width:100%;max-height:130px;border-radius:var(--radius-sm);margin-top:.5rem}
+
+/* WAITING — LUXURY */
+.waiting-wrap{background:#fff;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-md)}
+.waiting-top{background:linear-gradient(135deg,#1a0008,#3d0018,#6B0026);padding:1.5rem;text-align:center;color:#fff;position:relative;overflow:hidden}
+.waiting-top::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M20 20.5V18H0v5h5v5H0v5h5v4h5v-4h5v4h5v-4h5v4h5V28h-5v-5h5v-5h-5v-2.5'/%3E%3C/g%3E%3C/svg%3E")}
+.timer-ring{position:relative;width:90px;height:90px;margin:0 auto 1rem}
+.timer-ring svg{transform:rotate(-90deg)}
+.timer-ring .track{fill:none;stroke:rgba(255,255,255,.15);stroke-width:5}
+.timer-ring .fill{fill:none;stroke:#ffb3c6;stroke-width:5;stroke-linecap:round;stroke-dasharray:283;transition:stroke-dashoffset .9s linear}
+.timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:#fff}
+
+/* SEARCH ANIMATION */
+.search-anim{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:.875rem 1.125rem;margin:1rem 0;text-align:right}
+.search-anim-label{font-size:.72rem;color:rgba(255,255,255,.6);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em}
+.search-bar-fake{background:rgba(255,255,255,.12);border-radius:8px;padding:.625rem .875rem;display:flex;align-items:center;gap:.625rem;margin-bottom:.625rem}
+.search-cursor{display:inline-block;width:2px;height:14px;background:#ffb3c6;animation:blink .8s infinite;margin-right:2px;vertical-align:middle}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.search-results-fake{display:flex;flex-direction:column;gap:.375rem}
+.srf{background:rgba(255,255,255,.08);border-radius:6px;padding:.4rem .75rem;display:flex;align-items:center;justify-content:space-between;font-size:.75rem;animation:fadeSlide .4s ease forwards;opacity:0}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.srf-name{color:rgba(255,255,255,.9)}
+.srf-price{color:#ffb3c6;font-weight:700}
+
+/* GEARS */
+.gear-row{display:flex;align-items:center;justify-content:center;gap:0;margin:.75rem 0;position:relative;height:80px}
+.gear{animation:spinG linear infinite}
+.gear.rev{animation-name:spinR}
+@keyframes spinG{to{transform:rotate(360deg)}}
+@keyframes spinR{to{transform:rotate(-360deg)}}
+.parts-float-wrap{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.fp{position:absolute;animation:fpUp linear infinite;opacity:0}
+@keyframes fpUp{0%{opacity:0;transform:translateY(80px)}20%{opacity:1}80%{opacity:.8}100%{opacity:0;transform:translateY(-10px)}}
+
+/* TIPS */
+.tips-box{padding:1.25rem;background:var(--bg)}
+.tips-label{font-size:.72rem;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.375rem;display:flex;align-items:center;gap:.35rem}
+.tips-text{font-size:.875rem;color:var(--text);line-height:1.65}
+.tdots{display:flex;gap:4px;margin-top:.625rem}
+.tdot{width:5px;height:5px;border-radius:50%;background:var(--border2);transition:background .3s}
+.tdot.a{background:var(--brand)}
+
+/* PRICES */
+.prices-wrap{background:#fff;border-radius:var(--radius-lg);padding:1.25rem;box-shadow:var(--shadow-md)}
+.prices-hdr{text-align:center;padding-bottom:1rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.prices-hdr h3{font-size:1.05rem;font-weight:700;margin-bottom:.25rem}
+.prices-hdr p{font-size:.82rem;color:var(--muted)}
+.order-summary{background:var(--bg);border-radius:var(--radius-sm);padding:.75rem;margin-top:.75rem;display:flex;align-items:center;gap:.75rem}
+.os-icon{font-size:1.5rem}
+.os-part{font-weight:700;font-size:.9rem;color:var(--text)}
+.os-car{font-size:.78rem;color:var(--muted);margin-top:.1rem}
+
+.price-offer{background:#fff;border:2px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.125rem;margin-bottom:.75rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.875rem}
+.price-offer:hover{border-color:var(--brand-mid);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.price-offer.selected{border-color:var(--brand);background:var(--brand-light)}
+.price-offer.best{border-color:#d4af37;background:linear-gradient(135deg,#fffbeb,#fef9c3)}
+.price-offer.best.selected{border-color:var(--brand);background:var(--brand-light)}
+.offer-medal{font-size:1.5rem;flex-shrink:0}
+.offer-info{flex:1}
+.offer-dealer{font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:.2rem}
+.offer-price{font-size:1.5rem;font-weight:700;color:var(--text)}
+.offer-price span{font-size:.8rem;font-weight:400;color:var(--muted)}
+.best-tag{display:inline-block;background:#d4af37;color:#fff;font-size:.65rem;font-weight:700;padding:.15rem .5rem;border-radius:20px;margin-bottom:.3rem}
+.offer-check i{font-size:1.3rem;color:var(--border2);transition:color .15s}
+.price-offer.selected .offer-check i{color:var(--brand)}
+
+/* BUY */
+.buy-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.125rem;margin-top:.875rem}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:.625rem;margin-bottom:.875rem}
+.pay-opt{border:2px solid var(--border);border-radius:var(--radius);padding:.875rem .5rem;cursor:pointer;text-align:center;transition:all .15s;background:#fff}
+.pay-opt:hover{border-color:var(--brand-mid);background:var(--brand-light)}
+.pay-opt.on{border-color:var(--brand);background:var(--brand-light)}
+
+/* CONFIRMED */
+.confirmed-wrap{background:linear-gradient(135deg,#064e3b,#065f46);border-radius:var(--radius-lg);padding:2rem;text-align:center;color:#fff;margin-top:.875rem}
+.confirmed-wrap h3{font-size:1.15rem;font-weight:700;margin:.75rem 0 .375rem}
+.confirmed-detail{background:rgba(255,255,255,.12);border-radius:10px;padding:.875rem;margin:.875rem 0;font-size:.875rem}
+.wa-btn{background:#25D366;color:#fff;display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.25rem;border-radius:var(--radius-sm);font-weight:700;font-size:.875rem;text-decoration:none;border:none;cursor:pointer}
+.wa-btn:hover{background:#128C7E}
+
+/* TIMEOUT */
+.timeout-wrap{background:#fff;border-radius:var(--radius-lg);padding:2rem;text-align:center;box-shadow:var(--shadow-md)}
+
+@media(max-width:600px){
+  .type-grid{grid-template-columns:1fr 1fr}
+  .parts-grid-img{grid-template-columns:repeat(2,1fr)}
+  .form-row{grid-template-columns:1fr}
+  .ps-lbl{display:none}
+  .pay-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="logo"><i class="ti ti-tool"></i> كارلي <span>| قطع الغيار</span></div>
+  <a href="admin.html" style="font-size:.8rem;color:var(--muted)"><i class="ti ti-lock"></i> الإدارة</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>ابحث عن <em>قطعة غيارك</em></h1>
+  <p>أفضل سعر من أكبر موردي قطع الغيار في الإمارات</p>
+</div>
+
+<!-- شريط لوغوهات الشركات -->
+<div class="brands-strip">
+  <div class="brands-track" id="brandsTrack">
+    <!-- مجموعة أولى -->
+    <div class="brand-item"><div class="brand-logo" style="background:#c0392b">AL</div><div class="brand-name">الفطيم للغيار</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#2980b9">GK</div><div class="brand-name">الخليج للغيار</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#27ae60">NG</div><div class="brand-name">النهدة للغيار</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#8e44ad">SP</div><div class="brand-name">سبارك أوتو</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#e67e22">BZ</div><div class="brand-name">البرازيل</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#16a085">AU</div><div class="brand-name">الأوتو بارت</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#d35400">FA</div><div class="brand-name">فاست أوتو</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#1abc9c">GM</div><div class="brand-name">الخليج الأوسط</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#2c3e50">TR</div><div class="brand-name">تريبل أوتو</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#7f8c8d">ME</div><div class="brand-name">ميكانيك UAE</div></div>
+    <!-- مجموعة ثانية (نسخة للـ loop) -->
+    <div class="brand-item"><div class="brand-logo" style="background:#c0392b">AL</div><div class="brand-name">الفطيم للغيار</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#2980b9">GK</div><div class="brand-name">الخليج للغيار</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#27ae60">NG</div><div class="brand-name">النهدة للغيار</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#8e44ad">SP</div><div class="brand-name">سبارك أوتو</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#e67e22">BZ</div><div class="brand-name">البرازيل</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#16a085">AU</div><div class="brand-name">الأوتو بارت</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#d35400">FA</div><div class="brand-name">فاست أوتو</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#1abc9c">GM</div><div class="brand-name">الخليج الأوسط</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#2c3e50">TR</div><div class="brand-name">تريبل أوتو</div></div>
+    <div class="brand-item"><div class="brand-logo" style="background:#7f8c8d">ME</div><div class="brand-name">ميكانيك UAE</div></div>
+  </div>
+</div>
+
+<div class="agent-wrap">
+  <!-- PROGRESS -->
+  <div class="progress-steps" id="progressBar">
+    <div class="ps act" id="ps1"><div class="ps-num">١</div><div class="ps-lbl">النوع</div></div>
+    <div class="ps-line"></div>
+    <div class="ps" id="ps2"><div class="ps-num">٢</div><div class="ps-lbl">القطعة</div></div>
+    <div class="ps-line"></div>
+    <div class="ps" id="ps3"><div class="ps-num">٣</div><div class="ps-lbl">السيارة</div></div>
+    <div class="ps-line"></div>
+    <div class="ps" id="ps4"><div class="ps-num">٤</div><div class="ps-lbl">بياناتك</div></div>
+    <div class="ps-line"></div>
+    <div class="ps" id="ps5"><div class="ps-num">٥</div><div class="ps-lbl">الأسعار</div></div>
+  </div>
+
+  <div class="chat-box" id="chatBox"></div>
+
+  <!-- STEP 1 -->
+  <div class="input-panel step-block show" id="block1">
+    <div class="panel-title"><i class="ti ti-robot" style="color:var(--brand)"></i> نوع القطعة</div>
+    <div class="type-grid">
+      <div class="type-opt" onclick="pickType('original',this)">
+        <i class="ti ti-certificate"></i><div class="tname">جديد أصلي</div><div class="tdesc">وكالة بضمان كامل — يلزم رقم الشاسي</div>
+      </div>
+      <div class="type-opt" onclick="pickType('commercial',this)">
+        <i class="ti ti-package"></i><div class="tname">جديد تجاري</div><div class="tdesc">بديل جديد بجودة عالية — يلزم رقم الشاسي</div>
+      </div>
+      <div class="type-opt" onclick="pickType('used',this)">
+        <i class="ti ti-refresh"></i><div class="tname">مستعمل</div><div class="tdesc">سعر اقتصادي — لا يلزم رقم الشاسي</div>
+      </div>
+    </div>
+    <button class="btn btn-brand" style="width:100%;justify-content:center" id="b1" disabled onclick="goStep(2)">التالي <i class="ti ti-arrow-left"></i></button>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="input-panel step-block" id="block2">
+    <div class="panel-title"><i class="ti ti-apps" style="color:var(--brand)"></i> القسم والقطعة</div>
+    <div class="cat-grid-s">
+      <div class="cat-opt" onclick="pickCat('body',this)"><i class="ti ti-car"></i><span>بودي</span></div>
+      <div class="cat-opt" onclick="pickCat('engine',this)"><i class="ti ti-settings"></i><span>محرك وغيار</span></div>
+      <div class="cat-opt" onclick="pickCat('brake',this)"><i class="ti ti-circle-dashed"></i><span>بريك</span></div>
+      <div class="cat-opt" onclick="pickCat('electric',this)"><i class="ti ti-bolt"></i><span>كهربا وليتات</span></div>
+      <div class="cat-opt" onclick="pickCat('ac',this)"><i class="ti ti-wind"></i><span>تكييف</span></div>
+      <div class="cat-opt" onclick="pickCat('tires',this)"><i class="ti ti-circle"></i><span>تايرات ورنجات</span></div>
+    </div>
+    <div id="partsWrap" style="display:none;margin-bottom:.875rem">
+      <div style="font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:.5rem">اختر القطعة</div>
+      <div class="parts-grid-img" id="partsGrid"></div>
+    </div>
+    <div id="customWrap" style="display:none;margin-bottom:.875rem">
+      <div class="form-group"><label>اسم القطعة</label><input type="text" id="customPart" placeholder="اكتب اسم القطعة..." oninput="onCustomPart()"></div>
+    </div>
+    <div id="otherPartWrap" style="display:none;margin-bottom:.875rem">
+      <div class="form-group"><label>تحديد القطعة</label><input type="text" id="otherPart" placeholder="اكتب اسم القطعة..." oninput="onOtherPart()"></div>
+    </div>
+    <div style="display:flex;gap:.625rem">
+      <button class="btn btn-outline" onclick="goStep(1)"><i class="ti ti-arrow-right"></i></button>
+      <button class="btn btn-brand" style="flex:1;justify-content:center" id="b2" disabled onclick="goStep(3)">التالي <i class="ti ti-arrow-left"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="input-panel step-block" id="block3">
+    <div class="panel-title"><i class="ti ti-car" style="color:var(--brand)"></i> بيانات السيارة</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>الماركة <span style="color:var(--danger)">*</span></label>
+        <select id="brand" onchange="onBrandChange()">
+          <option value="">اختر الماركة</option>
+          <option>تويوتا</option><option>نيسان</option><option>هيونداي</option><option>كيا</option>
+          <option>هوندا</option><option>ميتسوبيشي</option><option>سوزوكي</option><option>فورد</option>
+          <option>شيفروليه</option><option>مرسيدس</option><option>بي إم دبليو</option><option>أودي</option>
+          <option>لكسس</option><option>إنفينيتي</option><option>جيب</option><option>رينو</option>
+          <option>فولكس واغن</option><option>بيجو</option><option>أخرى</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>الموديل <span style="color:var(--danger)">*</span></label>
+        <select id="carModel" onchange="onModelChange()" disabled>
+          <option value="">اختر الماركة أولاً</option>
+        </select>
+      </div>
+    </div>
+    <div id="otherModelWrap" style="display:none;margin-bottom:.75rem">
+      <div class="form-group"><label>تحديد الموديل</label><input type="text" id="otherModel" placeholder="اكتب الموديل..." oninput="validateCar()"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>سنة الصنع <span style="color:var(--danger)">*</span></label>
+        <select id="carYear" onchange="validateCar()"><option value="">اختر السنة</option></select>
+      </div>
+      <div class="form-group" id="chassisWrap">
+        <label>رقم الشاسي <span style="color:var(--danger)">*</span></label>
+        <input type="text" id="chassis" placeholder="مطلوب للقطع الجديدة" oninput="validateCar()">
+      </div>
+    </div>
+    <div class="form-group"><label>ملاحظات</label><textarea id="carNotes" rows="2" placeholder="أي تفاصيل عن القطعة..."></textarea></div>
+    <div class="form-group">
+      <label>صورة القطعة <span style="font-size:.7rem;color:var(--muted)">(اختياري)</span></label>
+      <div class="img-upload-box" id="imgUploadBox" onclick="document.getElementById('partImg').click()">
+        <input type="file" id="partImg" accept="image/*" style="display:none" onchange="handleImgUpload(event)">
+        <div id="imgUploadContent">
+          <i class="ti ti-photo-up" style="font-size:1.75rem;color:var(--muted2);display:block;margin-bottom:.4rem"></i>
+          <div style="font-size:.82rem;color:var(--muted)">انقر لرفع صورة القطعة</div>
+          <div style="font-size:.72rem;color:var(--muted2);margin-top:.2rem">PNG, JPG حتى 5MB</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:.625rem">
+      <button class="btn btn-outline" onclick="goStep(2)"><i class="ti ti-arrow-right"></i></button>
+      <button class="btn btn-brand" style="flex:1;justify-content:center" id="b3" disabled onclick="goStep(4)">التالي <i class="ti ti-arrow-left"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="input-panel step-block" id="block4">
+    <div class="panel-title"><i class="ti ti-user" style="color:var(--brand)"></i> بيانات التواصل</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>الاسم الكامل <span style="color:var(--danger)">*</span></label>
+        <input type="text" id="clientName" placeholder="محمد أحمد" oninput="validateContact()">
+      </div>
+      <div class="form-group">
+        <label>رقم الواتساب <span style="color:var(--danger)">*</span></label>
+        <input type="tel" id="clientPhone" placeholder="+971 50 000 0000" oninput="validateContact()">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>الإمارة</label>
+      <select id="clientEmirate">
+        <option value="">اختر الإمارة</option>
+        <option>أبوظبي</option><option>دبي</option><option>الشارقة</option><option>عجمان</option>
+        <option>أم القيوين</option><option>رأس الخيمة</option><option>الفجيرة</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:.625rem">
+      <button class="btn btn-outline" onclick="goStep(3)"><i class="ti ti-arrow-right"></i></button>
+      <button class="btn btn-brand" style="flex:1;justify-content:center" id="b4" disabled onclick="submitRequest()">
+        <i class="ti ti-search"></i> ابحث عن أفضل سعر
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 5: WAITING -->
+  <div class="step-block" id="block5">
+
+    <!-- WAITING STATE -->
+    <div id="waitingState">
+      <div class="waiting-wrap">
+        <div class="waiting-top">
+          <!-- عداد -->
+          <div class="timer-ring">
+            <svg viewBox="0 0 100 100" width="90" height="90">
+              <circle class="track" cx="50" cy="50" r="45"/>
+              <circle class="fill" cx="50" cy="50" r="45" id="timerArc" style="stroke-dashoffset:0"/>
+            </svg>
+            <div class="timer-num" id="timerNum">90</div>
+          </div>
+          <div style="font-size:.95rem;font-weight:700;margin-bottom:.25rem">جاري البحث عن أفضل سعر...</div>
+          <div style="font-size:.8rem;opacity:.75">تم إرسال طلبك للموردين — في انتظار الردود</div>
+
+          <!-- شريط البحث المتحرك -->
+          <div class="search-anim">
+            <div class="search-anim-label">🔍 يتم الاستعلام من الموردين</div>
+            <div class="search-bar-fake">
+              <i class="ti ti-search" style="color:rgba(255,255,255,.5);font-size:.9rem"></i>
+              <span style="font-size:.82rem;color:rgba(255,255,255,.8)" id="searchText">قطع الغيار في الإمارات...</span>
+              <span class="search-cursor"></span>
+            </div>
+            <div class="search-results-fake" id="searchResults"></div>
+          </div>
+
+          <!-- ترس وقطع طائرة -->
+          <div class="gear-row">
+            <svg class="gear" style="animation-duration:4s" width="70" height="70" viewBox="0 0 90 90">
+              <path fill="rgba(255,255,255,.15)" d="M45 5a40 40 0 100 80A40 40 0 0045 5zm0 56a16 16 0 110-32 16 16 0 010 32z"/>
+              <path fill="rgba(255,180,200,.9)" d="M47.5 2h-5l-2 8.5a33 33 0 00-8 3.3L25 10l-3.5 3.5 3.8 7.5a33 33 0 00-5 7l-8.5-1-1.8 4.8 6.5 5.5a33 33 0 000 9l-6.5 5.5 1.8 4.8 8.5-1a33 33 0 005 7L21.5 70 25 73.5l7.5-3.8a33 33 0 008 3.3l2 8.5h5l2-8.5a33 33 0 008-3.3l7.5 3.8L68 70l-3.8-7.5a33 33 0 005-7l8.5 1 1.8-4.8-6.5-5.5a33 33 0 000-9l6.5-5.5-1.8-4.8-8.5 1a33 33 0 00-5-7L67.5 21 64 17.5l-7.5 3.8a33 33 0 00-8-3.3L46.5 9h-4zm-2.5 22a21 21 0 110 42 21 21 0 010-42z"/>
+            </svg>
+            <svg class="gear rev" style="animation-duration:2.8s;margin-right:-10px;margin-top:18px" width="44" height="44" viewBox="0 0 90 90">
+              <path fill="rgba(255,255,255,.2)" d="M47.5 2h-5l-2 8.5a33 33 0 00-8 3.3L25 10l-3.5 3.5 3.8 7.5a33 33 0 00-5 7l-8.5-1-1.8 4.8 6.5 5.5a33 33 0 000 9l-6.5 5.5 1.8 4.8 8.5-1a33 33 0 005 7L21.5 70 25 73.5l7.5-3.8a33 33 0 008 3.3l2 8.5h5l2-8.5a33 33 0 008-3.3l7.5 3.8L68 70l-3.8-7.5a33 33 0 005-7l8.5 1 1.8-4.8-6.5-5.5a33 33 0 000-9l6.5-5.5-1.8-4.8-8.5 1a33 33 0 00-5-7L67.5 21 64 17.5l-7.5 3.8a33 33 0 00-8-3.3L46.5 9h-4zm-2.5 22a21 21 0 110 42 21 21 0 010-42z"/>
+            </svg>
+            <div class="parts-float-wrap" id="partsFloat"></div>
+          </div>
+        </div>
+
+        <!-- نصائح -->
+        <div class="tips-box">
+          <div class="tips-label"><i class="ti ti-bulb" style="color:var(--brand)"></i> نصيحة مفيدة</div>
+          <div class="tips-text" id="tipText">...</div>
+          <div class="tdots" id="tipDots"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICES STATE -->
+    <div id="pricesState" style="display:none">
+      <div class="prices-wrap">
+        <div class="prices-hdr">
+          <div style="font-size:1.75rem;margin-bottom:.5rem">🎉</div>
+          <h3>عروض الأسعار</h3>
+          <p>اختر العرض المناسب — مرتبة من الأقل للأعلى</p>
+          <div class="order-summary" id="orderSummary"></div>
+        </div>
+        <div id="pricesList"></div>
+
+        <!-- الشراء -->
+        <div id="buySection" style="display:none">
+          <div class="buy-wrap">
+            <div style="font-size:.875rem;font-weight:700;margin-bottom:.75rem"><i class="ti ti-credit-card" style="color:var(--brand)"></i> طريقة الدفع</div>
+            <div class="pay-grid">
+              <div class="pay-opt" id="pay-online" onclick="selectPayMethod('online')">
+                <div style="font-size:1.5rem;margin-bottom:.35rem">💳</div>
+                <div style="font-size:.875rem;font-weight:700">دفع أونلاين</div>
+                <div style="font-size:.72rem;color:var(--muted);margin-top:.2rem">بطاقة ائتمان / مدى</div>
+              </div>
+              <div class="pay-opt" id="pay-cash" onclick="selectPayMethod('cash')">
+                <div style="font-size:1.5rem;margin-bottom:.35rem">💵</div>
+                <div style="font-size:.875rem;font-weight:700">كاش</div>
+                <div style="font-size:.72rem;color:var(--muted);margin-top:.2rem">عند الاستلام</div>
+              </div>
+            </div>
+            <button id="confirmPayBtn" onclick="confirmPayment()" style="display:none;width:100%;justify-content:center" class="btn btn-brand btn-lg">
+              <i class="ti ti-check"></i> تأكيد وتثبيت الطلب
+            </button>
+          </div>
+        </div>
+
+        <!-- تأكيد -->
+        <div id="confirmedSection" style="display:none">
+          <div class="confirmed-wrap">
+            <div style="font-size:3rem">✅</div>
+            <h3>تم تثبيت طلبك!</h3>
+            <div class="confirmed-detail">
+              <div style="margin-bottom:.5rem">رقم الطلب: <strong id="confirmedOrderId"></strong></div>
+              <div style="margin-bottom:.5rem">المورد: <strong id="confirmedDealer"></strong></div>
+              <div style="font-size:1.4rem;font-weight:700;color:#86efac" id="confirmedPrice"></div>
+            </div>
+            <div style="font-size:.82rem;opacity:.8;margin-bottom:1rem">تم إرسال تفاصيل طلبك لقسم الشحن — سيتواصل معك قريباً</div>
+            <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+              <a id="waBtn" href="#" target="_blank" class="wa-btn"><i class="ti ti-brand-whatsapp"></i> تواصل مع كارلي</a>
+              <button class="btn btn-outline btn-sm" onclick="startNew()" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff"><i class="ti ti-plus"></i> طلب جديد</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMEOUT -->
+    <div id="timeoutState" style="display:none">
+      <div class="timeout-wrap">
+        <i class="ti ti-clock-x" style="font-size:2.5rem;color:var(--warning);display:block;margin-bottom:.875rem"></i>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:.375rem">انتهى وقت الانتظار</div>
+        <div style="font-size:.875rem;color:var(--muted);margin-bottom:1.25rem">سيتواصل معك فريق كارلي قريباً على واتساب</div>
+        <a id="waTimeoutBtn" href="#" target="_blank" class="wa-btn" style="display:inline-flex;justify-content:center">
+          <i class="ti ti-brand-whatsapp"></i> تواصل مع كارلي الآن
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="data.js"></script>
+<script src="carmodels.js"></script>
+<script src="client.js"></script>
+</body>
+</html>
