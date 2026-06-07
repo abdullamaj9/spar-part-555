@@ -300,55 +300,46 @@ function startWaiting(){
     }
 
     // ثانياً اقرأ الرسائل الواردة من UltraMsg
-    fetch('https://api.ultramsg.com/instance179001/messages/inbox?token=uudbww6esvtqnwyc&page=1&limit=20')
-      .then(function(r){ return r.json(); })
-      .then(function(data){
-        if(!data || !data.messages) return;
-        // DEBUG — اطبع أول رسالتين لنرى الشكل
-        console.log('📬 INBOX:', JSON.stringify(data.messages.slice(0,3)));
-        var msgs = data.messages;
-        var updated = false;
-        var orders = getOrders();
-        var idx = orders.findIndex(function(o){ return o.id===orderData.id; });
-        if(idx<0) return;
+    // اقرأ الرسائل من المحادثات مع الديلرين مباشرة
+    DEALERS.forEach(function(dealer){
+      var dNum = dealer.phone.replace(/^0/,'971').replace(/\s/g,'');
+      var chatId = dNum + '@c.us';
 
-        msgs.forEach(function(m){
-          var msgBody = (m.body||'').trim();
-          var msgTime = (m.time||0)*1000;
-          var msgFrom = (m.from||'').replace(/\D/g,'');
+      fetch('https://api.ultramsg.com/instance179001/chats/messages?token=uudbww6esvtqnwyc&chatId='+encodeURIComponent(chatId)+'&limit=10')
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if(!data || !data.messages) return;
+          console.log('📬 Chat msgs from '+dealer.name+':', JSON.stringify(data.messages.slice(0,3)));
 
-          // تحقق من الصيغة #رقم وبعد إرسال الطلب
-          if(!/^#\d+/.test(msgBody)) return;
-          if(msgTime < orderCreatedAt) return;
+          var orders = getOrders();
+          var idx = orders.findIndex(function(o){ return o.id===orderData.id; });
+          if(idx<0) return;
 
-          var price = parseFloat(msgBody.replace('#',''));
-          if(!price || price<=0) return;
+          data.messages.forEach(function(m){
+            var msgBody = (m.body||'').trim();
+            var msgTime = (m.time||0)*1000;
+            var fromMe  = m.fromMe || false;
 
-          // طابق مع الديلرين — UltraMsg يرسل الرقم بصيغة 971XXXXXXXX@c.us
-          DEALERS.forEach(function(dealer){
-            var dNum = dealer.phone.replace(/^0/,'').replace(/\s/g,''); // 509788772
-            if(msgFrom.includes(dNum)){
-              if(!orders[idx].dealerPrices[dealer.id]){
+            // رسالة من الديلر (مش منا) بصيغة #رقم وبعد إرسال الطلب
+            if(!fromMe && msgTime > orderCreatedAt && /^#\d+/.test(msgBody)){
+              var price = parseFloat(msgBody.replace('#',''));
+              if(price>0 && !orders[idx].dealerPrices[dealer.id]){
                 orders[idx].dealerPrices[dealer.id] = price;
-                updated = true;
+                var allP = Object.values(orders[idx].dealerPrices).filter(function(v){return v>0;});
+                orders[idx].bestPrice = Math.min.apply(null,allP);
+                orders[idx].status = 'priced';
+                orders[idx].pricedAt = new Date().toISOString();
+                localStorage.setItem('carly_orders', JSON.stringify(orders));
+                orderData = orders[idx];
                 console.log('✅ سعر من '+dealer.name+': '+price);
+                clearAll();
+                showPrices(orderData.dealerPrices);
               }
             }
           });
-        });
-
-        if(updated){
-          var allP = Object.values(orders[idx].dealerPrices).filter(function(v){return v>0;});
-          orders[idx].bestPrice = Math.min.apply(null,allP);
-          orders[idx].status = 'priced';
-          orders[idx].pricedAt = new Date().toISOString();
-          localStorage.setItem('carly_orders', JSON.stringify(orders));
-          orderData = orders[idx];
-          clearAll();
-          showPrices(orderData.dealerPrices);
-        }
-      })
-      .catch(function(e){ console.log('inbox error:',e); });
+        })
+        .catch(function(e){ console.log('chat error '+dealer.name+':', e); });
+    });
 
   }, 4000);
 }
